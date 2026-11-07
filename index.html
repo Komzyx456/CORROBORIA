@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#efe6b9">
+<meta name="description" content="LumIA: aprende a crear mejores prompts y usar la inteligencia artificial con criterio.">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<title>LumIA | CorroboraAI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Oswald:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body data-theme="beige">
+<header class="topbar">
+  <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú" aria-expanded="false"><span></span><span></span><span></span></button>
+  <button class="menu-word" id="menuWord">MENÚ</button>
+  <a class="brand" href="#inicio">Lum<span>IA</span></a>
+  <nav class="menu-popover" id="menuPopover" aria-label="Menú principal">
+    <a href="#inicio">Inicio <small>01</small></a>
+    <a href="#evaluador">Evaluar mi prompt <small>02</small></a>
+    <a href="#semaforo">Aprender con Lumi <small>03</small></a>
+    <button id="openFeedback">Enviar feedback <small>✉</small></button>
+    <button id="installApp">Instalar LumIA <small>↓</small></button>
+    <button id="openSettings">Configuración <small>⚙</small></button>
+    <a href="#nosotros">Sobre LumIA <small>04</small></a>
+  </nav>
+</header>
+
+<main>
+<section class="hero" id="inicio">
+  <div class="hero-shade"></div>
+  <div class="hero-card">
+    <div class="hero-mascot-wrap"><img src="lumi.png" alt="Lumi, mascota oficial de LumIA" class="hero-mascot"></div>
+    <div class="hero-copy">
+      <p class="eyebrow">TU COMPAÑERO PARA USAR MEJOR LA IA</p>
+      <h1>¡HOLA! SOY <span>LUMI</span></h1>
+      <p class="hero-lead">Tus ideas merecen buenas respuestas.</p>
+      <p class="hero-description">Te ayudo a revisar tus prompts, mejorarlos y aprender a utilizar la inteligencia artificial con criterio.</p>
+      <a class="cta" href="#evaluador">¡Probemos tu prompt! <b>→</b></a>
+    </div>
+  </div>
+  <div class="hero-sticker">CLARO · ÚTIL · CONFIABLE</div>
+</section>
+
+<section class="intro-strip" id="nosotros">
+  <div class="strip-mascot"><img src="lumi.png" alt="Lumi saludando"></div>
+  <div class="strip-copy"><p class="eyebrow">¿QUÉ ES LUMIA?</p><h2>Tu semáforo para conversar con la IA.</h2>
+  <p>LumIA — CorroboraAI es una herramienta educativa para revisar instrucciones, detectar oportunidades de mejora y fomentar un uso responsable de la inteligencia artificial.</p></div>
+  <div class="strip-note"><span>✦</span><strong>¡Aprender a preguntar<br>también es aprender!</strong></div>
+</section>
+
+<section class="section evaluator-section" id="evaluador">
+  <div class="section-title"><p class="eyebrow">01 / PON A PRUEBA TU IDEA</p><h2>¿Qué le quieres pedir a la IA?</h2><p>Escribe o pega tu prompt. Lumi lo revisará y te dará recomendaciones.</p></div>
+  <div class="workbench">
+    <div class="workbench-top"><span class="window-dots"><i></i><i></i><i></i></span><span>ÁREA DE REVISIÓN</span><span class="live-label">● LISTO PARA REVISAR</span></div>
+    <label for="promptInput">TU PROMPT</label>
+    <textarea id="promptInput" maxlength="1500" placeholder="Ejemplo: Investiga cómo influye la inteligencia artificial en la educación. Explica sus beneficios y desafíos con ejemplos para estudiantes de enseñanza media..."></textarea>
+    <div class="workbench-bottom"><span id="charCount">0 / 1500</span><button class="evaluate-btn" id="evaluateBtn">Revisar con Lumi <span>✦</span></button></div>
+    <p class="privacy-note">✦ Prototipo educativo: el análisis se realiza con criterios programados y tu texto no se envía a una IA externa.</p>
+  </div>
+  <div class="result-card hidden" id="resultCard" aria-live="polite">
+    <div class="result-heading"><img src="lumi.png" alt="Lumi"><div><p class="eyebrow">LUMI TIENE UN CONSEJO</p><h3 id="resultTitle">Revisemos tu idea</h3><p id="resultSummary"></p></div><div class="result-bulb" id="resultBulb"><span></span></div></div>
+    <div class="result-columns"><div><h4>LO QUE PUEDES MEJORAR</h4><div id="feedbackList" class="feedback-list"></div></div>
+    <div class="rewrite"><div class="rewrite-head"><h4>UNA VERSIÓN MEJORADA</h4><button id="copyBtn">Copiar ↗</button></div><p id="improvedPrompt"></p></div></div>
+    <p class="disclaimer">La evaluación es orientativa. Revisa las sugerencias y decide cuáles sirven para tu objetivo.</p>
+  </div>
+</section>
+
+<section class="section traffic-section" id="semaforo">
+  <div class="section-title"><p class="eyebrow">02 / APRENDE CON LUMI</p><h2>El semáforo del buen prompt</h2><p>¡Toca una luz! Cada color tiene una misión para ayudarte a usar la IA mejor.</p></div>
+  <div class="traffic-layout">
+    <div class="traffic-stage"><div class="traffic-body">
+      <button class="traffic-light red" data-color="red" aria-label="Rojo: detente y evita"><span></span></button>
+      <button class="traffic-light amber" data-color="amber" aria-label="Ámbar: revisa y mejora"><span></span></button>
+      <button class="traffic-light green" data-color="green" aria-label="Verde: buenas prácticas"><span></span></button>
+    </div><img class="traffic-lumi" src="lumi.png" alt="Lumi te acompaña"><p>SELECCIONA UN COLOR</p></div>
+    <article class="tip-card" aria-live="polite"><div class="tip-tag" id="tipTag">GUÍA INTERACTIVA DE LUMI</div><h3 id="tipTitle">¿Qué significa cada luz?</h3><p id="tipDescription">El semáforo te ayuda a recordar tres pasos: detenerte, revisar y avanzar con responsabilidad.</p><ul id="tipList"><li>Selecciona una de las luces.</li><li>Descubre consejos sencillos para tus prompts.</li></ul><div class="tip-bottom">✦ Aprende a preguntar. Aprende a pensar.</div></article>
+  </div>
+</section>
+
+<section class="final-banner"><img src="lumi.png" alt="Lumi"><div><p class="eyebrow">UNA IDEA A LA VEZ</p><h2>¡Tú tienes la idea.<br>Lumi te ayuda a mejorarla!</h2><a href="#evaluador">Volver al evaluador ↑</a></div></section>
+</main>
+<footer><a class="brand" href="#inicio">Lum<span>IA</span></a><span>CorroboraAI · Prototipo educativo</span><span>Usa la IA con curiosidad y criterio ✦</span></footer>
+
+<div class="modal-backdrop hidden" id="feedbackModal" role="dialog" aria-modal="true" aria-labelledby="feedbackTitle">
+  <div class="modal">
+    <button class="modal-close" data-close="feedbackModal" aria-label="Cerrar">×</button>
+    <p class="eyebrow">BUZÓN DE IDEAS</p><h2 id="feedbackTitle">¡Cuéntanos qué piensas!</h2>
+    <p class="modal-intro">Tu opinión nos ayuda a imaginar cómo podría mejorar LumIA.</p>
+    <form id="feedbackForm">
+      <label for="feedbackType">Tipo de feedback</label>
+      <select id="feedbackType"><option>Sugerencia</option><option>Problema o error</option><option>Comentario general</option></select>
+      <label for="feedbackText">Tu mensaje</label>
+      <textarea id="feedbackText" required maxlength="500" placeholder="Escribe aquí tu comentario..." rows="4"></textarea>
+      <button class="modal-submit" type="submit">Enviar comentario (demo) ✦</button>
+    </form>
+    <p class="modal-note">Demostración escolar: el comentario no se envía, no se guarda y nadie lo recibe.</p>
+    <div class="form-success hidden" id="feedbackSuccess">¡Gracias por probar el buzón! Este envío es solo una simulación. ✓</div>
+  </div>
+</div>
+
+<div class="modal-backdrop hidden" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+  <div class="modal settings-modal">
+    <button class="modal-close" data-close="settingsModal" aria-label="Cerrar">×</button>
+    <p class="eyebrow">PERSONALIZA TU EXPERIENCIA</p><h2 id="settingsTitle">Colores de LumIA</h2>
+    <p class="modal-intro">Elige la combinación que más te guste. El cambio se aplica a toda la página.</p>
+    <div class="theme-options">
+      <button class="theme-option" data-theme-choice="beige"><span class="swatches"><i></i><i></i><i></i></span><b>Beige</b><small>Suave y cálido</small></button>
+      <button class="theme-option" data-theme-choice="wine"><span class="swatches"><i></i><i></i><i></i></span><b>Vinotinto</b><small>Elegante y profundo</small></button>
+      <button class="theme-option" data-theme-choice="black"><span class="swatches"><i></i><i></i><i></i></span><b>Negro</b><small>Moderno y sobrio</small></button>
+      <button class="theme-option" data-theme-choice="white"><span class="swatches"><i></i><i></i><i></i></span><b>Blanco</b><small>Limpio y luminoso</small></button>
+      <button class="theme-option" data-theme-choice="sky"><span class="swatches"><i></i><i></i><i></i></span><b>Celeste</b><small>Fresco y tranquilo</small></button>
+    </div>
+    <p class="modal-note">La selección se mantiene mientras esta pestaña esté abierta. Al recargar, vuelve al tema beige.</p>
+  </div>
+</div>
+
+<div class="modal-backdrop hidden" id="installModal" role="dialog" aria-modal="true" aria-labelledby="installTitle">
+  <div class="modal">
+    <button class="modal-close" data-close="installModal" aria-label="Cerrar">×</button>
+    <p class="eyebrow">LUMIA EN TU DISPOSITIVO</p><h2 id="installTitle">Instala LumIA</h2>
+    <p class="modal-intro" id="installMessage">Puedes añadir LumIA a tu pantalla de inicio para abrirla como una aplicación.</p>
+    <button class="modal-submit" id="installAction">Instalar aplicación</button>
+    <p class="modal-note" id="installHelp">En iPhone o iPad: abre esta página en Safari, toca Compartir y selecciona «Añadir a pantalla de inicio». En Mac o Windows: busca el icono de instalación en la barra de direcciones del navegador compatible.</p>
+  </div>
+</div>
+<script src="script.js"></script>
+</body></html>

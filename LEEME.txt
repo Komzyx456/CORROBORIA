@@ -1,0 +1,32 @@
+LumIA FINAL — Página web pública + PWA instalable
+=================================================
+
+CONTENIDO
+- index.html, styles.css, script.js: web y funciones del prototipo.
+- lumi.png e icons/: mascota e iconos de la aplicación.
+- manifest.json: nombre, iconos y comportamiento de instalación.
+- service-worker.js: guarda archivos esenciales para uso sin conexión.
+- DEPLOY-GITHUB-PAGES.md: guía de publicación pública paso a paso.
+
+PROBAR EN TU MAC
+1. Descomprime el ZIP y abre la carpeta LumIA-final en VS Code.
+2. Abre index.html con Live Server.
+3. Prueba evaluador, menú, feedback simulado, temas y semáforo.
+4. El service worker se registra en localhost (Live Server) o HTTPS.
+
+PUBLICAR
+Sigue DEPLOY-GITHUB-PAGES.md. Una vez publicada por HTTPS, el navegador podrá ofrecer instalar LumIA.
+
+INSTALACIÓN
+- Android/Chrome: menú del navegador > Instalar aplicación o Añadir a pantalla de inicio.
+- iPhone/iPad: Safari > Compartir > Añadir a pantalla de inicio.
+- Mac/Windows: navegador compatible > icono Instalar en la barra de direcciones o menú.
+La opción automática depende del navegador y sus criterios de instalación.
+
+IMPORTANTE
+- Este prototipo no usa una IA externa: el evaluador analiza texto con reglas locales.
+- El formulario de feedback es una simulación; no envía ni guarda mensajes.
+- El modo sin conexión almacena los archivos principales después de la primera visita.
+- La fotografía de portada y las fuentes de Google necesitan internet; pueden no aparecer sin conexión.
+- GitHub Pages publica el contenido del repositorio. Si eliges un repositorio público, cualquiera podrá ver el código.
+- GitHub Pages requiere publicar desde un repositorio GitHub y sirve el sitio mediante HTTPS.

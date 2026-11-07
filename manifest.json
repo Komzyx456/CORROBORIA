@@ -1,0 +1,17 @@
+{
+  "id": "./",
+  "name": "LumIA - CorroboraAI",
+  "short_name": "LumIA",
+  "description": "Asistente educativo para crear mejores prompts y usar la IA con criterio.",
+  "lang": "es",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#fbf7e9",
+  "theme_color": "#efe6b9",
+  "icons": [
+    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"}
+  ]
+}
