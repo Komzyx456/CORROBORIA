@@ -46,9 +46,145 @@ function evaluatePrompt(text){
  return {checks,issues,score,total,color,isResearch,isCreative};
 }
 
-
-function improvedPrompt(
 function improvedPrompt(original) {
+  const raw = original.trim();
+  const analysis = evaluatePrompt(raw);
+  const research = analysis.isResearch;
+  const creative = analysis.isCreative;
+
+  const audience = /\b(para estudiantes|para alumnos|para profesores|dirigido a|audiencia|público objetivo|enseñanza media|enseñanza básica|principiantes|expertos|niños|adolescentes|universitarios)\b/i.test(raw)
+    ? "Respeta el público objetivo indicado en la solicitud original."
+    : "Público objetivo: estudiantes de enseñanza media. Utiliza lenguaje claro y explica los conceptos técnicos.";
+
+  const format = /\b(tabla|lista|apartados|secciones|párrafos|estructura|formato|diapositivas|introducción|conclusión|pasos|viñetas|guion)\b/i.test(raw)
+    ? "Respeta el formato solicitado originalmente."
+    : research
+      ? "Organiza la respuesta con introducción, desarrollo por apartados y conclusión."
+      : "Organiza la respuesta en una estructura clara y fácil de seguir.";
+
+  let sections = "";
+
+  if (research) {
+    sections = `
+**Desarrollo de la investigación:**
+- Explica los conceptos fundamentales relacionados con el tema.
+- Identifica los principales factores, causas y consecuencias pertinentes.
+- Incluye ejemplos concretos y relevantes.
+- Distingue los hechos comprobados de las hipótesis y proyecciones.
+`;
+  } else if (creative) {
+    sections = `
+**Orientaciones para la creación:**
+- Desarrolla la idea original sin cambiar su intención.
+- Mantén coherencia y creatividad.
+- Adapta el resultado al contexto de la solicitud.
+`;
+  } else {
+    sections = `
+**Orientaciones para responder:**
+- Resuelve directamente la tarea solicitada.
+- Explica los pasos o argumentos necesarios.
+- Incluye ejemplos cuando sean útiles.
+`;
+  }
+
+  const sources = research
+    ? `
+**Fuentes y verificación:**
+Utiliza fuentes confiables y verificables. Identifica autores, instituciones y fechas. No inventes referencias y señala las limitaciones de la información disponible.
+`
+    : "";
+
+  return `# PROMPT MEJORADO
+
+**Solicitud principal:**
+${raw}
+
+**Objetivo:**
+Cumple la solicitud original de manera clara, precisa y completa.
+
+**Público y nivel:**
+${audience}
+
+${sections}
+**Formato de respuesta:**
+${format}
+
+${sources}
+**Instrucción final:**
+Conserva el tema, el enfoque y la intención de la solicitud original. No incorpores temas ajenos ni inventes información. Si falta un dato indispensable, indica qué información necesitas antes de asumirla.
+`;
+}
+
+  const raw = original.trim();
+  const analysis = evaluatePrompt(raw);
+  const research = analysis.isResearch;
+  const creative = analysis.isCreative;
+
+  const audience = /\b(para estudiantes|para alumnos|para profesores|dirigido a|audiencia|público objetivo|enseñanza media|enseñanza básica|principiantes|expertos|niños|adolescentes|universitarios)\b/i.test(raw)
+    ? "Respeta el público objetivo indicado en la solicitud original."
+    : "Público objetivo: estudiantes de enseñanza media. Utiliza lenguaje claro y explica los conceptos técnicos.";
+
+  const format = /\b(tabla|lista|apartados|secciones|párrafos|estructura|formato|diapositivas|introducción|conclusión|pasos|viñetas|guion)\b/i.test(raw)
+    ? "Respeta el formato solicitado originalmente."
+    : research
+      ? "Organiza la respuesta con introducción, desarrollo por apartados y conclusión."
+      : "Organiza la respuesta en una estructura clara y fácil de seguir.";
+
+  let sections = "";
+
+  if (research) {
+    sections = `
+**Desarrollo de la investigación:**
+- Explica los conceptos fundamentales relacionados con el tema.
+- Identifica los principales factores, causas y consecuencias pertinentes.
+- Incluye ejemplos concretos y relevantes.
+- Distingue los hechos comprobados de las hipótesis y proyecciones.
+`;
+  } else if (creative) {
+    sections = `
+**Orientaciones para la creación:**
+- Desarrolla la idea original sin cambiar su intención.
+- Mantén coherencia y creatividad.
+- Adapta el resultado al contexto de la solicitud.
+`;
+  } else {
+    sections = `
+**Orientaciones para responder:**
+- Resuelve directamente la tarea solicitada.
+- Explica los pasos o argumentos necesarios.
+- Incluye ejemplos cuando sean útiles.
+`;
+  }
+
+  const sources = research
+    ? `
+**Fuentes y verificación:**
+Utiliza fuentes confiables y verificables. Identifica autores, instituciones y fechas. No inventes referencias y señala las limitaciones de la información disponible.
+`
+    : "";
+
+  return `# PROMPT MEJORADO
+
+**Solicitud principal:**
+${raw}
+
+**Objetivo:**
+Cumple la solicitud original de manera clara, precisa y completa.
+
+**Público y nivel:**
+${audience}
+
+${sections}
+**Formato de respuesta:**
+${format}
+
+${sources}
+**Instrucción final:**
+Conserva el tema, el enfoque y la intención de la solicitud original. No incorpores temas ajenos ni inventes información. Si falta un dato indispensable, indica qué información necesitas antes de asumirla.
+`;
+}
+
   const raw = original.trim();
   const analysis = evaluatePrompt(raw);
   const research = analysis.isResearch;
