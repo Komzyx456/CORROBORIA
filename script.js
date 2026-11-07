@@ -162,7 +162,7 @@
     const hasSubject = raw.length >= 25 && hasTask;
     const hasContext = raw.length >= 55 || /\b(porque|para que|contexto|situacion|objetivo|en el caso de|considerando)\b/i.test(t);
     const hasAudience = /\b(para estudiantes|para alumnos|para profesores|dirigido a|audiencia|publico objetivo|ensenanza media|ensenanza basica|principiantes|expertos|ninos|adolescentes|universitarios|especialistas)\b/i.test(t);
-    const hasFormat = /\b(tabla|lista|apartados|secciones|parrafos|estructura|formato|diapositivas|introduccion|conclusion|pasos|vinetas|guion|cuadro|informe|presentacion)\b/i.test(t);
+   const hasFormat = /\b(tabla|lista|apartados|secciones|parrafos|estructura|formato|diapositivas|introduccion|conclusion|pasos|vinetas|guion|cuadro|informe|presentacion|cuento|cuentos|relato|relatos|poema|poemas|novela|historia|historias|narracion|narrativa|dialogo|dialogos|escena|escenas|600 palabras|palabras aproximadamente)\b/i.test(t);
     const hasSources = /\b(fuentes|bibliografia|referencias|citas|documentos cientificos|articulos academicos|organismos oficiales)\b/i.test(t);
     const hasExamples = /\b(ejemplo|ejemplos|caso practico|casos concretos)\b/i.test(t);
     const hasScope = /\b(entre \d{4}|durante|periodo|desde .{2,30} hasta|en chile|en latinoamerica|en .{2,30}|en los ultimos|aspectos|factores|causas|consecuencias)\b/i.test(t);
@@ -278,6 +278,196 @@
   }
   // ---------- Construcción del prompt mejorado ----------
   function improvedPrompt(original) {
+  const raw = original.trim();
+  const analysis = evaluatePrompt(raw);
+  const t = analysis.text;
+  const sections = [];
+
+  // 1. Instrucciones específicas según la tarea
+  const taskGuidance = {
+    research:
+      "Realiza una investigación organizada. Explica el contexto, los factores relevantes, sus causas y consecuencias. Distingue los hechos comprobados de las hipótesis.",
+
+    comparison:
+      "Compara los elementos solicitados utilizando criterios equivalentes. Explica semejanzas, diferencias, ventajas y desventajas, y termina con una conclusión basada en los criterios analizados.",
+
+    summary:
+      "Resume las ideas principales sin alterar el significado del contenido. Prioriza la información esencial y evita agregar datos que no estén presentes en el material original.",
+
+    explanation:
+      "Explica el tema paso a paso. Define los conceptos importantes, utiliza ejemplos pertinentes y adapta la profundidad de la explicación al público objetivo.",
+
+    creative:
+      "Desarrolla una creación original que respete la idea central, el género, el tono, los personajes y las condiciones indicadas. Mantén la coherencia del contenido.",
+
+    problem:
+      "Resuelve la tarea paso a paso. Explica el razonamiento, muestra los procedimientos necesarios y comprueba el resultado cuando sea posible.",
+
+    translation:
+      "Traduce conservando el significado, el tono y el contexto del texto original. Evita añadir o eliminar información."
+  };
+
+  sections.push(
+    "**Objetivo y tarea:**\n" +
+    (taskGuidance[analysis.type] ||
+      "Responde directamente a la solicitud. Organiza la información de manera lógica y mantén el enfoque original.")
+  );
+
+  // 2. Público objetivo
+  if (!analysis.hasAudience) {
+    sections.push(
+      "**Público objetivo:**\n" +
+      "Estudiantes de enseñanza media. Utiliza un lenguaje claro y apropiado para ese nivel, explicando los términos técnicos cuando sea necesario."
+    );
+  } else {
+    sections.push(
+      "**Público objetivo:**\n" +
+      "Respeta el público y el nivel de conocimientos indicados en la solicitud original."
+    );
+  }
+
+  // 3. Investigación
+  if (analysis.type === "research") {
+    sections.push(
+      "**Aspectos que debes investigar:**\n" +
+      "- Contexto y conceptos fundamentales.\n" +
+      "- Causas y factores relacionados.\n" +
+      "- Consecuencias y efectos principales.\n" +
+      "- Ejemplos o casos concretos.\n" +
+      "- Diferencias entre grupos, lugares o periodos cuando corresponda."
+    );
+
+    sections.push(
+      "**Fuentes y verificación:**\n" +
+      "Utiliza fuentes confiables y verificables. Identifica autores, instituciones y fechas. No inventes referencias y señala las limitaciones de la evidencia disponible."
+    );
+
+    if (!analysis.hasScope) {
+      sections.push(
+        "**Delimitación:**\n" +
+        "Define los aspectos más importantes del tema y evita abarcar información que no contribuya al objetivo."
+      );
+    }
+  }
+
+  // 4. Comparaciones
+  else if (analysis.type === "comparison") {
+    sections.push(
+      "**Criterios de comparación:**\n" +
+      "Utiliza los mismos criterios para todos los elementos. Expón semejanzas, diferencias, ventajas y desventajas sin favorecer injustificadamente una opción."
+    );
+
+    sections.push(
+      "**Conclusión:**\n" +
+      "Resume los resultados y explica qué opción resulta más adecuada según los criterios analizados."
+    );
+  }
+
+  // 5. Creaciones literarias
+  else if (analysis.type === "creative") {
+    sections.push(
+      "**Desarrollo creativo:**\n" +
+      "Respeta el género, la idea central, los personajes y las condiciones establecidas. Desarrolla el contenido con originalidad y coherencia."
+    );
+
+    if (/\b(cuento|relato|historia|novela)\b/.test(t)) {
+      sections.push(
+        "**Estructura narrativa:**\n" +
+        "- Inicio: presenta el escenario y los personajes.\n" +
+        "- Desarrollo: construye el conflicto y desarrolla los acontecimientos.\n" +
+        "- Desenlace: resuelve el conflicto de forma coherente.\n" +
+        "Si se solicita misterio o sorpresa, construye pistas y prepara un desenlace que tenga sentido."
+      );
+    } else if (/\b(poema|poesia)\b/.test(t)) {
+      sections.push(
+        "**Criterios poéticos:**\n" +
+        "Cuida las imágenes, el ritmo, el lenguaje y la expresión de emociones. Respeta las condiciones de estilo o estructura solicitadas."
+      );
+    } else if (/\b(guion|dialogo|escena)\b/.test(t)) {
+      sections.push(
+        "**Estructura del guion:**\n" +
+        "Organiza las escenas y los diálogos de forma clara. Diferencia las intervenciones de los personajes y las indicaciones de acción."
+      );
+    }
+
+    sections.push(
+      "**Criterios de calidad creativa:**\n" +
+      "Mantén la coherencia entre personajes, acontecimientos y escenario. Evita contradicciones y respeta el tono solicitado."
+    );
+  }
+
+  // 6. Resúmenes
+  else if (analysis.type === "summary") {
+    sections.push(
+      "**Criterios del resumen:**\n" +
+      "Conserva las ideas centrales, elimina repeticiones y evita introducir información que no aparezca en el material original."
+    );
+  }
+
+  // 7. Problemas y ejercicios
+  else if (analysis.type === "problem") {
+    sections.push(
+      "**Comprobación:**\n" +
+      "Explica los pasos utilizados y verifica que el resultado responda a la pregunta. Si faltan datos, indícalo en lugar de inventarlos."
+    );
+  }
+
+  // 8. Traducciones
+  else if (analysis.type === "translation") {
+    sections.push(
+      "**Fidelidad de la traducción:**\n" +
+      "Conserva el sentido, el registro y las expresiones del original. Si una expresión tiene varios significados, utiliza el contexto para elegir la traducción adecuada."
+    );
+  }
+
+  // 9. Formato: adaptar a la tarea
+  if (analysis.type === "creative") {
+    sections.push(
+      "**Formato de respuesta:**\n" +
+      "Entrega directamente la creación solicitada. Respeta la extensión, el género y la estructura narrativa indicados. No conviertas una historia, poema o cuento en un informe."
+    );
+  } else if (analysis.type === "comparison") {
+    sections.push(
+      "**Formato de respuesta:**\n" +
+      "Presenta la comparación en una tabla cuando se solicite y añade la conclusión correspondiente."
+    );
+  } else if (analysis.type === "research") {
+    sections.push(
+      "**Formato de respuesta:**\n" +
+      "Organiza la investigación con título, introducción, desarrollo por apartados, conclusión y referencias."
+    );
+  } else if (!analysis.hasFormat) {
+    sections.push(
+      "**Formato de respuesta:**\n" +
+      "Utiliza una estructura clara y ordenada, adecuada al tipo de tarea. Ajusta la extensión a su complejidad."
+    );
+  } else {
+    sections.push(
+      "**Formato de respuesta:**\n" +
+      "Respeta el formato, la organización y la extensión indicados en la solicitud original."
+    );
+  }
+
+  // 10. Calidad: no imponer fuentes a tareas de ficción
+  if (analysis.type === "research" || analysis.type === "explanation") {
+    sections.push(
+      "**Criterios de calidad:**\n" +
+      "No inventes datos ni fuentes. Señala incertidumbres y diferencia los hechos comprobados de las interpretaciones."
+    );
+  } else if (analysis.type !== "creative") {
+    sections.push(
+      "**Criterios de calidad:**\n" +
+      "Responde con precisión, evita contradicciones y mantén el enfoque de la solicitud original."
+    );
+  }
+
+  return (
+    "PROMPT MEJORADO\n\n" +
+    raw +
+    "\n\n" +
+    sections.join("\n\n")
+  );
+}
     const raw = original.trim();
     const analysis = evaluatePrompt(raw);
     const t = analysis.text;
