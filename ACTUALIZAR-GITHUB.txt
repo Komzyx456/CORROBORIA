@@ -1,0 +1,31 @@
+ACTUALIZAR LUMIA EN GITHUB
+
+Esta actualización corrige el evaluador y el generador de prompts. No reemplaces toda la web: basta con actualizar dos archivos.
+
+1. Abre tu repositorio CORROBORIA en GitHub.
+2. Entra en la pestaña Code.
+3. Pulsa Add file > Upload files.
+4. Desde Finder, abre la carpeta LumIA-final de este paquete.
+5. Arrastra SOLO estos dos archivos a GitHub:
+   - script.js
+   - service-worker.js
+   Ambos deben quedar en la raíz del repositorio, al mismo nivel que index.html y styles.css.
+6. Si GitHub pregunta si quieres reemplazar los archivos existentes, confirma. En el cuadro Commit changes escribe: "Corrige evaluador y generador de prompts".
+7. Pulsa Commit changes.
+8. Espera a que GitHub Pages termine la publicación.
+
+IMPORTANTE SOBRE LA PWA Y LA CACHÉ
+- Se cambió el nombre de caché del Service Worker a lumia-corroboraai-v2 para que el navegador descarte la caché anterior.
+- Abre la web y recárgala. Si sigues viendo la versión antigua, haz una recarga forzada: en Chrome/Edge para Mac, Cmd + Shift + R. En Safari, usa Option + Cmd + E para vaciar cachés y luego Cmd + R.
+- En una PWA instalada, ciérrala completamente y vuelve a abrirla con conexión a internet. En algunos navegadores puede hacer falta cerrar y abrir una segunda vez para que el Service Worker nuevo tome el control.
+
+PRUEBAS RECOMENDADAS
+A) "Investiga cómo afecta el cambio climático al comportamiento de los pingüinos árticos."
+   Esperado: luz ámbar o roja y aviso de precisión geográfica. No debe introducir inteligencia artificial, empleo ni educación.
+B) "Cuéntame absolutamente todo sobre los volcanes."
+   Esperado: detectar que el alcance es demasiado amplio y sugerir delimitarlo.
+C) "Compara la energía solar y eólica para estudiantes de enseñanza media. Organiza la respuesta en una tabla, incluye ejemplos y utiliza fuentes científicas verificables."
+   Esperado: luz verde.
+
+NOTA
+El evaluador usa reglas locales de JavaScript; no es un modelo de IA ni consulta internet. El generador conserva el prompt original y añade instrucciones según el tipo de solicitud, sin imponer un tema ajeno.
