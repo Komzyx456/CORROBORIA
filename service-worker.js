@@ -1,4 +1,4 @@
-const CACHE_NAME = "lumia-corroboraai-v1";
+const CACHE_NAME = "lumia-corroboraai-v2";
 const APP_FILES = ["./", "./index.html", "./styles.css", "./script.js", "./lumi.png", "./manifest.json", "./icons/icon-192.png", "./icons/icon-512.png", "./icons/apple-touch-icon.png"];
 self.addEventListener("install", event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(APP_FILES)).then(() => self.skipWaiting()));

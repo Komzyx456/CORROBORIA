@@ -14,36 +14,59 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape")document.querySelect
 document.getElementById("feedbackForm").addEventListener("submit",e=>{e.preventDefault();document.getElementById("feedbackSuccess").classList.remove("hidden");e.target.reset()});
 
 const themeNames=["beige","wine","black","white","sky"];
-function setTheme(theme){if(!themeNames.includes(theme))return;document.body.dataset.theme=theme;document.querySelectorAll(".theme-option").forEach(b=>b.classList.toggle("selected",b.dataset.themeChoice===theme))}
+function setTheme(theme){if(!themeNames.includes(theme))return;document.body.dataset.theme=theme;try{localStorage.setItem("lumia-theme",theme)}catch{}document.querySelectorAll(".theme-option").forEach(b=>b.classList.toggle("selected",b.dataset.themeChoice===theme))}
 document.querySelectorAll(".theme-option").forEach(b=>b.addEventListener("click",()=>setTheme(b.dataset.themeChoice)));
-setTheme("beige");
+let savedTheme="beige";try{savedTheme=localStorage.getItem("lumia-theme")||"beige"}catch{}setTheme(savedTheme);
 
 promptInput.addEventListener("input",()=>charCount.textContent=`${promptInput.value.length} / 1500`);
 function evaluatePrompt(text){
- const t=text.toLowerCase(),checks=[];
+ const raw=text.trim(),t=raw.toLocaleLowerCase('es');
+ const isResearch=/\b(investiga|investigación|investigar|estudio|informe|analiza|analizar)\b/i.test(t);
+ const isCreative=/\b(cuento|poema|historia|guion|diseña|dibuja|imagina|crea)\b/i.test(t);
+ const checks=[],issues=[];
  const add=(ok,good,bad)=>checks.push({ok,good,bad});
- add(text.trim().length>=35,"Incluyes contexto para entender el tema.","Agrega contexto: explica qué necesitas investigar y para qué.");
- add(/\b(investiga|explica|resume|compara|analiza|crea|describe|define|evalua|evalúa)\b/.test(t),"La tarea principal se entiende.","Indica una acción concreta: investigar, comparar, explicar o analizar.");
- add(/\b(para estudiantes|para alumnos|para profesores|dirigido a|audiencia|nivel escolar|enseñanza media|principiantes)\b/.test(t),"Defines a quién va dirigida la respuesta.","Especifica el público: por ejemplo, estudiantes de enseñanza media.");
- add(/\b(tabla|lista|apartados|secciones|párrafos|estructura|formato|diapositivas|introducción)\b/.test(t),"Das indicaciones sobre la estructura.","Define el formato: introducción, apartados, conclusión, tabla o lista.");
- add(/\b(fuentes confiables|fuentes verificables|fuentes académicas|bibliografía|citas|referencias)\b/.test(t),"Pides fuentes o referencias verificables.","Solicita fuentes confiables, citas y referencias que se puedan comprobar.");
- add(/\b(ejemplo|ejemplos|caso práctico|casos)\b/.test(t),"Pides ejemplos para aclarar la información.","Pide uno o dos ejemplos concretos para comprender mejor el tema.");
- const issues=[];
- if(/muy completa|muy detallada|toda la información/.test(t)&&/pero (también )?(corta|breve)|corta y fácil|breve y completa/.test(t))issues.push("Contradicción: pides una investigación muy completa, pero también corta. Define una extensión aproximada o prioriza los puntos más importantes.");
- if(/todo lo relacionado|todo sobre|todo lo que|toda la información necesaria|impacto.*mundo actual/.test(t))issues.push("Tema demasiado amplio: delimita el enfoque, por ejemplo IA en educación, empleo o vida cotidiana.");
- if(/buena o mala|bueno o malo/.test(t))issues.push("Pregunta demasiado absoluta: analiza beneficios, riesgos y condiciones de uso en lugar de decidir si la IA es buena o mala.");
- if(/utiliza información de internet|información de internet/.test(t)&&!/fuentes confiables|fuentes verificables|fuentes académicas|bibliografía|citas|referencias/.test(t))issues.push("Fuentes poco definidas: pedir información de internet no garantiza que sea confiable ni actualizada.");
- if(/no importa el formato/.test(t)&&/investigación|informe|trabajo/.test(t))issues.push("Falta de estructura: para una investigación conviene indicar apartados y formato.");
- if(/asegúrate de que todo sea verdadero|todo sea verdadero/.test(t))issues.push("La instrucción pide veracidad, pero no indica cómo comprobarla. Solicita fuentes, fechas y advertencias cuando existan dudas.");
- const score=checks.filter(c=>c.ok).length;
- const color=(issues.length>=3||score<=1)?"red":(issues.length>=1||score<=4)?"amber":"green";
- return{checks,issues,score,color};
+ add(raw.length>=35,"El contexto permite entender la solicitud.","Agrega contexto: explica qué necesitas y por qué.");
+ add(/\b(investiga|investigar|explica|resume|compara|analiza|analizar|crea|escribe|describe|define|evalúa|diseña|traduce|resuelve|propón|genera|cuéntame|cuentame|dame|dime|enumera|calcula|responde)\b/i.test(t),"La acción que debe realizar la IA está identificada.","Indica una acción concreta: investigar, explicar, comparar, crear, resumir, etc.");
+ const hasAudience=/\b(para estudiantes|para alumnos|para profesores|dirigido a|audiencia|público objetivo|enseñanza media|enseñanza básica|principiantes|expertos|niños|adolescentes|universitarios)\b/i.test(t);
+ add(hasAudience,"El público o nivel está indicado.","Define quién utilizará la respuesta y qué nivel de conocimientos tiene.");
+ const hasFormat=/\b(tabla|lista|apartados|secciones|párrafos|estructura|formato|diapositivas|introducción|conclusión|pasos|viñetas|guion)\b/i.test(t);
+ add(hasFormat,"La forma de presentar el resultado está orientada.","Indica el formato que te sirve: pasos, lista, tabla, apartados o párrafos.");
+ if(isResearch){
+  add(/\b(fuentes|bibliografía|referencias|citas|documentos científicos|artículos académicos)\b/i.test(t),"La investigación contempla fuentes o referencias.","Pide fuentes confiables y verificables, con autor/organización y fecha.");
+  add(/\b(ejemplo|ejemplos|caso práctico|casos concretos)\b/i.test(t),"Incluyes ejemplos como apoyo.","Pide uno o dos ejemplos concretos si ayudan a entender el tema.");
+ }
+ if(/\b(corta|breve)\b/i.test(t)&&/\b(muy completa|muy detallada|en profundidad|exhaustiva|toda la información)\b/i.test(t)) issues.push("Posible contradicción de extensión: pides profundidad y brevedad al mismo tiempo. Define una extensión o prioriza los aspectos esenciales.");
+ if(/\b(todo lo relacionado|todo sobre|absolutamente todo|todos los aspectos|toda la información)\b/i.test(t)) issues.push("El alcance es demasiado amplio. Delimita los aspectos, periodo, lugar o grupo que te interesa.");
+ if(/\b(utiliza información de internet|información de internet)\b/i.test(t)&&! /\b(fuentes confiables|fuentes verificables|referencias|bibliografía|citas)\b/i.test(t)) issues.push("Pedir información de internet no garantiza calidad. Solicita fuentes identificables y comprobables.");
+ if(/\b(no importa el formato|como quieras|de cualquier forma)\b/i.test(t)) issues.push("El formato queda completamente abierto. Indica cómo quieres organizar el resultado.");
+ if(/\b(pingüinos? árticos?|pinguinos? articos?)\b/i.test(t)) issues.push("Revisa la premisa geográfica: no existen poblaciones naturales de pingüinos en el Ártico; viven de forma natural en el hemisferio sur. ¿Te refieres a pingüinos antárticos o al efecto del cambio climático sobre aves del Ártico?");
+ if(/\b(garantiza|asegura|100 ?% verdadero|sin errores)\b/i.test(t)) issues.push("Ninguna instrucción puede garantizar que la IA no se equivoque. Pide que reconozca incertidumbres y permita verificar las fuentes.");
+ const score=checks.filter(x=>x.ok).length,total=checks.length,ratio=total?score/total:0;
+ const color=(issues.length>=2||score<=1||ratio<.3)?"red":(issues.length>0||ratio<.8)?"amber":"green";
+ return {checks,issues,score,total,color,isResearch,isCreative};
 }
-function improvedPrompt(original){return `${original.trim()}\n\nPara mejorar la investigación, delimita el tema a los principales efectos de la inteligencia artificial en la educación, el empleo y la vida cotidiana. Organiza la respuesta con introducción, secciones temáticas y conclusión. Utiliza un lenguaje claro para estudiantes de enseñanza media y una extensión aproximada de 700 a 900 palabras. Incluye ejemplos concretos y utiliza fuentes confiables y recientes, indicando sus nombres y fechas. Distingue los hechos comprobados de las proyecciones y presenta beneficios y riesgos sin reducir el tema a una respuesta simplemente buena o mala.`}
+
+function improvedPrompt(original){
+ const raw=original.trim(),t=raw.toLocaleLowerCase('es');
+ const analysis=evaluatePrompt(raw), additions=[];
+ const research=analysis.isResearch;
+ // Mantener intactos el tema y la intención: nunca añadir un dominio temático fijo.
+ if(!/\b(para estudiantes|para alumnos|para profesores|dirigido a|audiencia|público objetivo|enseñanza media|enseñanza básica|principiantes|expertos|niños|adolescentes|universitarios)\b/i.test(t)) additions.push("Adapta el nivel de detalle y el vocabulario a un público general, explicando los términos técnicos necesarios.");
+ if(!/\b(tabla|lista|apartados|secciones|párrafos|estructura|formato|diapositivas|introducción|conclusión|pasos|viñetas|guion)\b/i.test(t)) additions.push(research?"Organiza el contenido con introducción, desarrollo en apartados y conclusión.":"Presenta el resultado en una estructura clara y fácil de seguir, adecuada para la tarea solicitada.");
+ if(research&&!/\b(fuentes|bibliografía|referencias|citas|documentos científicos|artículos académicos)\b/i.test(t)) additions.push("Utiliza fuentes confiables y verificables; identifica autor u organización y fecha. No inventes citas ni referencias.");
+ if(research&&!/\b(ejemplo|ejemplos|caso práctico|casos concretos)\b/i.test(t)) additions.push("Incluye ejemplos concretos cuando aporten claridad al tema.");
+ if(/\b(todo lo relacionado|todo sobre|absolutamente todo|todos los aspectos|toda la información)\b/i.test(t)) additions.push("Delimita el desarrollo a los aspectos más relevantes del tema, evitando desviarte hacia asuntos secundarios.");
+ if(/\b(corta|breve)\b/i.test(t)&&/\b(muy completa|muy detallada|en profundidad|exhaustiva|toda la información)\b/i.test(t)) additions.push("Resuelve la tensión entre profundidad y brevedad: prioriza los puntos esenciales y utiliza una extensión equilibrada.");
+ additions.push("Mantén exactamente el tema, el enfoque y el objetivo de mi solicitud original. No sustituyas el tema ni agregues áreas que no haya pedido.");
+ additions.push("Distingue los hechos comprobados de las interpretaciones o proyecciones. Si la pregunta contiene una premisa dudosa o incorrecta, señálala y pide aclaración en vez de asumirla como verdadera.");
+ const unique=[...new Set(additions)];
+ return `${raw}\n\nIndicaciones para desarrollar la solicitud:\n${unique.map((x,i)=>`${i+1}. ${x}`).join("\n")}`;
+}
+
 document.getElementById("evaluateBtn").addEventListener("click",()=>{
  const value=promptInput.value.trim();if(!value){promptInput.focus();promptInput.setCustomValidity("Escribe un prompt antes de revisarlo.");promptInput.reportValidity();promptInput.addEventListener("input",()=>promptInput.setCustomValidity(""),{once:true});return}
  const r=evaluatePrompt(value),labels={red:"¡Alto! Hay que replantearlo",amber:"¡Luz ámbar! Puede mejorar",green:"¡Luz verde! Buen trabajo"},summaries={red:"Tu instrucción todavía necesita cambios importantes para orientar bien a la IA.",amber:"Tienes una base útil, pero encontramos aspectos que podrían confundir o limitar la respuesta.",green:"Tu prompt es claro y coherente. Revísalo una vez más y comprueba la respuesta que recibas."};
- document.getElementById("resultTitle").textContent=labels[r.color];document.getElementById("resultSummary").textContent=`${summaries[r.color]} ${r.score} de 6 criterios detectados.`;
+ document.getElementById("resultTitle").textContent=labels[r.color];document.getElementById("resultSummary").textContent=`${summaries[r.color]} ${r.score} de ${r.total} criterios detectados.`;
  document.querySelector("#resultBulb span").style.background=r.color==="red"?"#e95b55":r.color==="amber"?"#f4b52e":"#68b84b";
  const messages=r.checks.filter(c=>!c.ok).map(c=>({icon:"✦",text:c.bad})).concat(r.issues.map(text=>({icon:"⚠",text})));
  if(!messages.length)messages.push({icon:"✓",text:"No detectamos problemas importantes con los criterios básicos de este prototipo."});
