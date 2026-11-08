@@ -458,7 +458,124 @@
       sections.join("\n\n")
     );
   }
-  
+// ---------- Historial de prompts ----------
+
+const HISTORY_KEY = "lumia-prompt-history";
+
+let promptHistory = [];
+
+try {
+  const savedHistory = JSON.parse(
+    localStorage.getItem(HISTORY_KEY) || "[]"
+  );
+
+  if (Array.isArray(savedHistory)) {
+    promptHistory = savedHistory;
+  }
+} catch (_) {
+  promptHistory = [];
+}
+
+// Mostrar los registros guardados
+function renderHistory() {
+  const historyList = $("historyList");
+
+  if (!historyList) return;
+
+  historyList.replaceChildren();
+
+  if (promptHistory.length === 0) {
+    const empty = document.createElement("p");
+
+    empty.className = "history-empty";
+    empty.textContent =
+      "Todavía no tienes evaluaciones guardadas. ¡Prueba tu primer prompt con Lumi!";
+
+    historyList.append(empty);
+    return;
+  }
+
+  promptHistory.forEach((entry) => {
+    const card = document.createElement("article");
+    card.className = "history-entry";
+
+    const header = document.createElement("div");
+    header.className = "history-entry-header";
+
+    const date = document.createElement("span");
+    date.textContent = entry.date;
+
+    const score = document.createElement("strong");
+    score.textContent =
+      `${entry.score} de ${entry.total} criterios`;
+
+    header.append(date, score);
+
+    const originalTitle = document.createElement("h3");
+    originalTitle.textContent = "Prompt original";
+
+    const original = document.createElement("p");
+    original.textContent = entry.prompt;
+
+    const details = document.createElement("details");
+
+    const summary = document.createElement("summary");
+    summary.textContent = "Ver prompt mejorado";
+
+    const improved = document.createElement("pre");
+    improved.textContent = entry.improved;
+
+    details.append(summary, improved);
+
+    card.append(header, originalTitle, original, details);
+
+    historyList.append(card);
+  });
+}
+
+// Guardar una nueva evaluación
+function saveHistoryEntry(entry) {
+  promptHistory.unshift(entry);
+
+  // Conservar solo los últimos 20 registros
+  promptHistory = promptHistory.slice(0, 20);
+
+  try {
+    localStorage.setItem(
+      HISTORY_KEY,
+      JSON.stringify(promptHistory)
+    );
+  } catch (_) {
+    console.warn("No se pudo guardar el historial.");
+  }
+
+  renderHistory();
+}
+
+// Botón para borrar los registros
+$("clearHistoryBtn")?.addEventListener("click", () => {
+  if (promptHistory.length === 0) return;
+
+  const confirmed = window.confirm(
+    "¿Quieres borrar todo tu historial de prompts?"
+  );
+
+  if (!confirmed) return;
+
+  promptHistory = [];
+
+  try {
+    localStorage.removeItem(HISTORY_KEY);
+  } catch (_) {}
+
+  renderHistory();
+});
+
+// Mostrar el historial al abrir LumIA
+renderHistory();
+
+// ---------- Fin del historial ----------
+   
   // ---------- Evaluación y presentación ----------
   $("evaluateBtn")?.addEventListener("click", () => {
     if (!promptInput) return;
@@ -559,7 +676,16 @@
     if (improved) {
       improved.textContent = improvedPrompt(value);
     }
-
+     
+// Guardar la evaluación en el historial
+saveHistoryEntry({
+  prompt: value,
+  improved: improved ? improved.textContent : "",
+  score: result.score,
+  total: result.total,
+  date: new Date().toLocaleString("es-CL")
+});
+     
     resultCard?.classList.remove("hidden");
     resultCard?.scrollIntoView({
       behavior: "smooth",
