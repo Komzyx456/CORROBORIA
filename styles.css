@@ -369,3 +369,229 @@ html{scroll-behavior:smooth}body{margin:0;background:var(--page);color:var(--ink
 }
 
 /* ---------- Fin del diseño del perfil Mi Lumi ---------- */
+
+
+/* ---------- Perfil personal Mi Lumi ---------- */
+
+.lumi-profile-section {
+  background: var(--page);
+}
+
+.lumi-profile-card {
+  max-width: 850px;
+  margin: auto;
+  padding: 30px;
+  background: var(--surface);
+  border: 2px solid var(--line);
+  border-radius: 28px;
+  box-shadow: 0 15px 40px var(--shadow);
+}
+
+/* Cabecera del perfil */
+
+.lumi-profile-top {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding: 22px;
+  background: var(--soft);
+  border-radius: 22px;
+}
+
+.lumi-avatar {
+  width: 105px;
+  height: 105px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  background: var(--surface);
+  border: 3px solid var(--line);
+  border-radius: 50%;
+  font-size: 57px;
+  box-shadow: 0 7px 0 var(--line);
+}
+
+.lumi-profile-info h3 {
+  margin: 0 0 6px;
+  font: 700 27px Oswald, sans-serif;
+}
+
+.lumi-profile-info span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* Editor del perfil */
+
+.lumi-profile-edit {
+  display: grid;
+  gap: 12px;
+  margin: 25px 0;
+}
+
+.lumi-profile-edit label {
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.lumi-profile-edit input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 13px 15px;
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  background: var(--page);
+  color: var(--ink);
+  font: 13px "DM Sans", sans-serif;
+  outline: none;
+}
+
+.lumi-profile-edit input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--soft);
+}
+
+/* Selector de avatares */
+
+.lumi-avatar-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.lumi-avatar-selector button {
+  width: 53px;
+  height: 53px;
+  border: 2px solid var(--line);
+  border-radius: 15px;
+  background: var(--page);
+  font-size: 27px;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.lumi-avatar-selector button:hover {
+  transform: translateY(-4px) scale(1.06);
+  border-color: var(--accent);
+}
+
+.lumi-avatar-selector button.selected {
+  background: var(--soft);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--soft);
+}
+
+#saveLumiProfile {
+  border: 0;
+  border-radius: 30px;
+  padding: 14px 20px;
+  background: var(--button);
+  color: white;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: .2s;
+}
+
+#saveLumiProfile:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+}
+
+/* Estadísticas */
+
+.lumi-profile-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 13px;
+  margin: 25px 0;
+}
+
+.lumi-profile-stats > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  padding: 20px 10px;
+  background: var(--soft);
+  border-radius: 17px;
+  text-align: center;
+}
+
+.lumi-profile-stats span {
+  font-size: 25px;
+}
+
+.lumi-profile-stats strong {
+  font: 700 19px Oswald, sans-serif;
+}
+
+.lumi-profile-stats small {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+/* Colección de insignias */
+
+.lumi-profile-achievements {
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+
+.lumi-profile-achievements h3 {
+  font: 700 22px Oswald, sans-serif;
+  margin: 0 0 7px;
+}
+
+.lumi-profile-achievements > p {
+  color: var(--muted);
+  font-size: 12px;
+  margin: 0 0 18px;
+}
+
+#profileBadgeList {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+/* Adaptación a celulares */
+
+@media (max-width: 600px) {
+  .lumi-profile-card {
+    padding: 18px;
+    border-radius: 20px;
+  }
+
+  .lumi-profile-top {
+    gap: 14px;
+    padding: 15px;
+  }
+
+  .lumi-avatar {
+    width: 78px;
+    height: 78px;
+    font-size: 43px;
+  }
+
+  .lumi-profile-info h3 {
+    font-size: 22px;
+  }
+
+  .lumi-profile-stats {
+    gap: 7px;
+  }
+
+  .lumi-profile-stats > div {
+    padding: 15px 5px;
+  }
+
+  .lumi-profile-stats strong {
+    font-size: 15px;
+  }
+
+  #profileBadgeList {
+    grid-template-columns: 1fr;
+  }
+}
