@@ -811,7 +811,140 @@ function renderProgress() {
 renderProgress();
 
 // ---------- Fin del sistema de LumiPoints ----------
-   
+
+// ---------- Personalización del perfil Mi Lumi ----------
+
+const PROFILE_KEY = "lumia-user-profile";
+
+const defaultLumiProfile = {
+  username: "Usuario Lumi",
+  avatar: "🦊"
+};
+
+let lumiProfile = { ...defaultLumiProfile };
+
+// Recuperar perfil guardado
+try {
+  const savedProfile = JSON.parse(
+    localStorage.getItem(PROFILE_KEY) || "null"
+  );
+
+  if (savedProfile && typeof savedProfile === "object") {
+    lumiProfile = {
+      ...defaultLumiProfile,
+      ...savedProfile
+    };
+  }
+} catch (_) {}
+
+// Mostrar datos del perfil
+function renderLumiProfile() {
+  if ($("lumiAvatarDisplay")) {
+    $("lumiAvatarDisplay").textContent = lumiProfile.avatar;
+  }
+
+  if ($("lumiUsernameDisplay")) {
+    $("lumiUsernameDisplay").textContent = lumiProfile.username;
+  }
+
+  if ($("lumiUsernameInput")) {
+    $("lumiUsernameInput").value = lumiProfile.username;
+  }
+
+  // Marcar el avatar seleccionado
+  document.querySelectorAll("[data-avatar]").forEach((button) => {
+    button.classList.toggle(
+      "selected",
+      button.dataset.avatar === lumiProfile.avatar
+    );
+  });
+
+  // Mostrar estadísticas
+  if ($("profilePoints")) {
+    $("profilePoints").textContent =
+      lumiProgress.points + " LP";
+  }
+
+  if ($("profileBadges")) {
+    $("profileBadges").textContent =
+      lumiProgress.unlockedBadges.length;
+  }
+
+  if ($("profileLevel")) {
+    $("profileLevel").textContent =
+      "Nivel " + (Math.floor(lumiProgress.points / 100) + 1);
+  }
+
+  // Mostrar insignias
+  const badgeContainer = $("profileBadgeList");
+
+  if (badgeContainer) {
+    badgeContainer.replaceChildren();
+
+    badgeDefinitions.forEach((badge) => {
+      const unlocked =
+        lumiProgress.unlockedBadges.includes(badge.id);
+
+      const item = document.createElement("div");
+      item.className =
+        "badge-card " + (unlocked ? "unlocked" : "locked");
+
+      const icon = document.createElement("div");
+      icon.className = "badge-icon";
+      icon.textContent = unlocked ? badge.icon : "🔒";
+
+      const name = document.createElement("h4");
+      name.textContent = badge.name;
+
+      const description = document.createElement("p");
+      description.textContent = badge.description;
+
+      item.append(icon, name, description);
+      badgeContainer.append(item);
+    });
+  }
+}
+
+// Elegir avatar
+document.querySelectorAll("[data-avatar]").forEach((button) => {
+  button.addEventListener("click", () => {
+    lumiProfile.avatar = button.dataset.avatar;
+    renderLumiProfile();
+  });
+});
+
+// Guardar perfil
+$("saveLumiProfile")?.addEventListener("click", () => {
+  const input = $("lumiUsernameInput");
+
+  const username = input.value.trim();
+
+  if (!username) {
+    alert("Escribe un nombre antes de guardar tu perfil.");
+    return;
+  }
+
+  lumiProfile.username = username.slice(0, 20);
+
+  try {
+    localStorage.setItem(
+      PROFILE_KEY,
+      JSON.stringify(lumiProfile)
+    );
+
+    renderLumiProfile();
+
+    alert("¡Tu perfil se ha guardado correctamente!");
+  } catch (_) {
+    alert("No se pudo guardar el perfil en este navegador.");
+  }
+});
+
+// Mostrar perfil al abrir la página
+renderLumiProfile();
+
+// ---------- Fin de la personalización del perfil ----------
+
   // ---------- Evaluación y presentación ----------
   $("evaluateBtn")?.addEventListener("click", () => {
     if (!promptInput) return;
