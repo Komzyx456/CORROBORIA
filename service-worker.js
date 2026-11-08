@@ -1,5 +1,5 @@
 
-const CACHE_NAME = "lumia-corroboraai-v3";
+const CACHE_NAME = "lumia-corroboraai-v4";
 
 const APP_FILES = [
   "./",
