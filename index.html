@@ -144,7 +144,85 @@
 
 </section>
 <!-- ---------- Fin del progreso ---------- -->
+
   
+<!-- ---------- Perfil Mi Lumi ---------- -->
+<section class="section lumi-profile-section" id="miLumi">
+
+  <div class="section-title">
+    <p class="eyebrow">04 / TU ESPACIO PERSONAL</p>
+    <h2>Mi Lumi</h2>
+    <p>Tu aventura de aprendizaje comienza aquí.</p>
+  </div>
+
+  <div class="lumi-profile-card">
+
+    <div class="lumi-profile-top">
+      <div class="lumi-avatar" id="lumiAvatarDisplay">🦊</div>
+
+      <div class="lumi-profile-info">
+        <p class="eyebrow">MI PERFIL</p>
+        <h3 id="lumiUsernameDisplay">Usuario Lumi</h3>
+        <span>Explorador del conocimiento ✨</span>
+      </div>
+    </div>
+
+    <div class="lumi-profile-edit">
+      <label for="lumiUsernameInput">Mi nombre de usuario</label>
+      <input
+        type="text"
+        id="lumiUsernameInput"
+        maxlength="20"
+        placeholder="Escribe tu nombre"
+      >
+
+      <label>Elige tu avatar</label>
+      <div class="lumi-avatar-selector" id="lumiAvatarSelector">
+        <button type="button" data-avatar="🦊">🦊</button>
+        <button type="button" data-avatar="🐼">🐼</button>
+        <button type="button" data-avatar="🐸">🐸</button>
+        <button type="button" data-avatar="🐱">🐱</button>
+        <button type="button" data-avatar="🐧">🐧</button>
+        <button type="button" data-avatar="🦉">🦉</button>
+        <button type="button" data-avatar="🐨">🐨</button>
+        <button type="button" data-avatar="🐙">🐙</button>
+      </div>
+
+      <button type="button" id="saveLumiProfile">
+        Guardar perfil
+      </button>
+    </div>
+
+    <div class="lumi-profile-stats">
+      <div>
+        <span>⭐</span>
+        <strong id="profilePoints">0 LP</strong>
+        <small>LumiPoints</small>
+      </div>
+
+      <div>
+        <span>🏆</span>
+        <strong id="profileBadges">0</strong>
+        <small>Insignias</small>
+      </div>
+
+      <div>
+        <span>🚀</span>
+        <strong id="profileLevel">Nivel 1</strong>
+        <small>Mi nivel</small>
+      </div>
+    </div>
+
+    <div class="lumi-profile-achievements">
+      <h3>🏆 Mi colección de insignias</h3>
+      <p>Tus logros en el camino del aprendizaje.</p>
+      <div id="profileBadgeList"></div>
+    </div>
+
+  </div>
+</section>
+<!-- ---------- Fin del perfil Mi Lumi ---------- -->
+
 <section class="section traffic-section" id="semaforo">
   <div class="section-title"><p class="eyebrow">02 / APRENDE CON LUMI</p><h2>El semáforo del buen prompt</h2><p>¡Toca una luz! Cada color tiene una misión para ayudarte a usar la IA mejor.</p></div>
   <div class="traffic-layout">
