@@ -538,6 +538,9 @@ function saveHistoryEntry(entry) {
   promptHistory.unshift(entry);
 
   // Conservar solo los últimos 20 registros
+  function saveHistoryEntry(entry) {
+  // Guardar evaluación
+  promptHistory.unshift(entry);
   promptHistory = promptHistory.slice(0, 20);
 
   try {
@@ -549,32 +552,253 @@ function saveHistoryEntry(entry) {
     console.warn("No se pudo guardar el historial.");
   }
 
+  // Sumar una evaluación
+  lumiProgress.totalEvaluations += 1;
+
+  // Otorgar puntos por evaluar
+  addLumiPoints(10, "Prompt evaluado");
+
+  // Bono por una evaluación de 80% o más
+  if (
+    entry.total > 0 &&
+    entry.score / entry.total >= 0.8
+  ) {
+    addLumiPoints(5, "Evaluación destacada");
+    lumiProgress.hasHighScore = true;
+  }
+
+  // Comprobar insignias
+  checkBadges();
+
+  // Actualizar pantallas
   renderHistory();
+  renderProgress();
+
+  saveProgress();
 }
-
-// Botón para borrar los registros
-$("clearHistoryBtn")?.addEventListener("click", () => {
-  if (promptHistory.length === 0) return;
-
-  const confirmed = window.confirm(
-    "¿Quieres borrar todo tu historial de prompts?"
-  );
-
-  if (!confirmed) return;
-
-  promptHistory = [];
-
-  try {
-    localStorage.removeItem(HISTORY_KEY);
-  } catch (_) {}
-
-  renderHistory();
-});
 
 // Mostrar el historial al abrir LumIA
 renderHistory();
 
 // ---------- Fin del historial ----------
+
+   // ---------- Sistema de LumiPoints ----------
+
+const PROGRESS_KEY = "lumia-progress";
+
+const badgeDefinitions = [
+  {
+    id: "first",
+    icon: "🏅",
+    name: "Primer análisis",
+    description: "Evalúa tu primer prompt.",
+    condition: (p) => p.totalEvaluations >= 1
+  },
+  {
+    id: "explorer",
+    icon: "🔎",
+    name: "Explorador",
+    description: "Evalúa 5 prompts.",
+    condition: (p) => p.totalEvaluations >= 5
+  },
+  {
+    id: "clear",
+    icon: "💡",
+    name: "Prompt claro",
+    description: "Consigue una evaluación del 80% o más.",
+    condition: (p) => p.hasHighScore
+  },
+  {
+    id: "constant",
+    icon: "🚀",
+    name: "Constancia",
+    description: "Evalúa 10 prompts.",
+    condition: (p) => p.totalEvaluations >= 10
+  }
+];
+
+let lumiProgress = {
+  points: 0,
+  totalEvaluations: 0,
+  hasHighScore: false,
+  unlockedBadges: [],
+  ledger: []
+};
+
+try {
+  const savedProgress = JSON.parse(
+    localStorage.getItem(PROGRESS_KEY) || "null"
+  );
+
+  if (savedProgress && typeof savedProgress === "object") {
+    lumiProgress = {
+      ...lumiProgress,
+      ...savedProgress
+    };
+  }
+} catch (_) {}
+
+function saveProgress() {
+  try {
+    localStorage.setItem(
+      PROGRESS_KEY,
+      JSON.stringify(lumiProgress)
+    );
+  } catch (_) {
+    console.warn("No se pudo guardar el progreso.");
+  }
+}
+
+// Añadir puntos y registrarlos
+function addLumiPoints(amount, reason) {
+  lumiProgress.points += amount;
+
+  lumiProgress.ledger.unshift({
+    amount,
+    reason,
+    date: new Date().toLocaleDateString("es-CL")
+  });
+
+  lumiProgress.ledger =
+    lumiProgress.ledger.slice(0, 50);
+
+  saveProgress();
+}
+
+// Comprobar y desbloquear insignias
+function checkBadges() {
+  badgeDefinitions.forEach((badge) => {
+    const alreadyUnlocked =
+      lumiProgress.unlockedBadges.includes(badge.id);
+
+    if (!alreadyUnlocked && badge.condition(lumiProgress)) {
+      lumiProgress.unlockedBadges.push(badge.id);
+
+      addLumiPoints(
+        25,
+        "Insignia desbloqueada: " + badge.name
+      );
+    }
+  });
+}
+
+// Mostrar insignias
+function renderBadges() {
+  const container = $("badgeList");
+
+  if (!container) return;
+
+  container.replaceChildren();
+
+  badgeDefinitions.forEach((badge) => {
+    const unlocked =
+      lumiProgress.unlockedBadges.includes(badge.id);
+
+    const card = document.createElement("article");
+    card.className =
+      "badge-card" + (unlocked ? " unlocked" : " locked");
+
+    const icon = document.createElement("div");
+    icon.className = "badge-icon";
+    icon.textContent = unlocked ? badge.icon : "🔒";
+
+    const name = document.createElement("h4");
+    name.textContent = badge.name;
+
+    const description = document.createElement("p");
+    description.textContent = badge.description;
+
+    const status = document.createElement("span");
+    status.textContent =
+      unlocked ? "Desbloqueada ✓" : "Bloqueada";
+
+    card.append(icon, name, description, status);
+    container.append(card);
+  });
+}
+
+// Mostrar LumiPoints y nivel
+function renderPoints() {
+  const points = lumiProgress.points;
+  const level = Math.floor(points / 100) + 1;
+  const progress = points % 100;
+
+  if ($("lumiPoints")) {
+    $("lumiPoints").textContent = points;
+  }
+
+  if ($("lumiLevel")) {
+    $("lumiLevel").textContent =
+      `Nivel ${level} · ${
+        level === 1 ? "Principiante" :
+        level === 2 ? "Aprendiz" :
+        level === 3 ? "Experto" : "Maestro"
+      }`;
+  }
+
+  if ($("levelProgressText")) {
+    $("levelProgressText").textContent =
+      `${progress} / 100 LP`;
+  }
+
+  if ($("levelProgressBar")) {
+    $("levelProgressBar").style.width =
+      `${progress}%`;
+  }
+}
+
+// Mostrar el registro de puntos
+function renderPointsHistory() {
+  const container = $("pointsHistory");
+
+  if (!container) return;
+
+  container.replaceChildren();
+
+  if (lumiProgress.ledger.length === 0) {
+    const empty = document.createElement("p");
+    empty.textContent =
+      "Todavía no has conseguido LumiPoints.";
+    empty.className = "history-empty";
+
+    container.append(empty);
+    return;
+  }
+
+  lumiProgress.ledger.forEach((entry) => {
+    const row = document.createElement("div");
+    row.className = "points-entry";
+
+    const info = document.createElement("div");
+
+    const reason = document.createElement("strong");
+    reason.textContent = entry.reason;
+
+    const date = document.createElement("small");
+    date.textContent = entry.date;
+
+    info.append(reason, date);
+
+    const amount = document.createElement("strong");
+    amount.className = "points-amount";
+    amount.textContent = `+${entry.amount} LP`;
+
+    row.append(info, amount);
+    container.append(row);
+  });
+}
+
+// Actualizar toda la pantalla
+function renderProgress() {
+  renderPoints();
+  renderBadges();
+  renderPointsHistory();
+}
+
+// Mostrar progreso guardado
+renderProgress();
+
+// ---------- Fin del sistema de LumiPoints ----------
    
   // ---------- Evaluación y presentación ----------
   $("evaluateBtn")?.addEventListener("click", () => {
