@@ -535,10 +535,6 @@ function renderHistory() {
 
 // Guardar una nueva evaluación
 function saveHistoryEntry(entry) {
-  promptHistory.unshift(entry);
-
-  // Conservar solo los últimos 20 registros
-  function saveHistoryEntry(entry) {
   // Guardar evaluación
   promptHistory.unshift(entry);
   promptHistory = promptHistory.slice(0, 20);
