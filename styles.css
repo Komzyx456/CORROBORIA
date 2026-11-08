@@ -13,3 +13,171 @@ html{scroll-behavior:smooth}body{margin:0;background:var(--page);color:var(--ink
 .modal-backdrop{position:fixed;inset:0;background:#17171499;z-index:20;display:grid;place-items:center;padding:18px}.modal-backdrop.hidden{display:none}.modal{position:relative;width:min(100%,500px);max-height:90vh;overflow:auto;background:var(--surface);color:var(--ink);border-radius:22px;padding:30px;box-shadow:0 25px 80px #0004}.modal-close{position:absolute;right:17px;top:12px;border:0;background:var(--soft);color:var(--ink);width:32px;height:32px;border-radius:50%;font-size:23px;cursor:pointer}.modal h2{font:700 29px Oswald,sans-serif;margin:0 0 8px}.modal-intro{font-size:12px;line-height:1.7;color:var(--muted);margin:0 0 22px}.modal label{margin:15px 0 8px}.modal select{padding:11px;font-size:12px}.modal textarea{min-height:110px;font-size:12px}.modal-submit{width:100%;border:0;border-radius:30px;padding:14px;background:var(--button);color:#fff;font-weight:800;font-size:12px;margin-top:14px;cursor:pointer}.modal-note{font-size:10px;line-height:1.6;color:var(--muted);margin:14px 0 0}.form-success{margin-top:15px;padding:12px;border-radius:10px;background:var(--soft);color:var(--accent);font-size:12px;font-weight:700}.theme-options{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.theme-option{border:1.5px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);padding:13px;text-align:left;cursor:pointer;display:grid;gap:6px}.theme-option:hover,.theme-option.selected{border-color:var(--accent);box-shadow:0 0 0 2px var(--soft)}.theme-option b{font-size:12px}.theme-option small{font-size:10px;color:var(--muted)}.swatches{display:flex;gap:5px}.swatches i{width:19px;height:19px;border-radius:50%;border:1px solid #0001}.theme-option[data-theme-choice="beige"] i:nth-child(1){background:#fbf7e9}.theme-option[data-theme-choice="beige"] i:nth-child(2){background:#efe6b9}.theme-option[data-theme-choice="beige"] i:nth-child(3){background:#8b684c}.theme-option[data-theme-choice="wine"] i:nth-child(1){background:#f4e9eb}.theme-option[data-theme-choice="wine"] i:nth-child(2){background:#762d43}.theme-option[data-theme-choice="wine"] i:nth-child(3){background:#32151f}.theme-option[data-theme-choice="black"] i:nth-child(1){background:#202124}.theme-option[data-theme-choice="black"] i:nth-child(2){background:#37393d}.theme-option[data-theme-choice="black"] i:nth-child(3){background:#d4b77e}.theme-option[data-theme-choice="white"] i:nth-child(1){background:#fff}.theme-option[data-theme-choice="white"] i:nth-child(2){background:#f0f0ee}.theme-option[data-theme-choice="white"] i:nth-child(3){background:#77705f}.theme-option[data-theme-choice="sky"] i:nth-child(1){background:#edf7fc}.theme-option[data-theme-choice="sky"] i:nth-child(2){background:#d7edf7}.theme-option[data-theme-choice="sky"] i:nth-child(3){background:#347b9b}
 @media(max-width:760px){.topbar{height:65px;padding:0 17px;gap:18px}.menu-word{font-size:21px}.hero{padding:40px 5%;min-height:auto}.hero-card{grid-template-columns:1fr;border-radius:35px;padding:25px;text-align:center;gap:10px}.hero-mascot{width:190px;height:180px}.hero-description{margin:auto}.hero-sticker{right:6%;bottom:10px;font-size:8px}.intro-strip{grid-template-columns:85px 1fr;padding:30px 6%;gap:15px}.strip-mascot img{width:85px;height:95px}.strip-copy h2{font-size:23px}.strip-note{grid-column:1/-1;border-left:0;border-top:1px solid var(--line);padding:14px 0 0}.section{padding:55px 5%}.workbench,.result-card{padding:18px}.result-columns,.traffic-layout{grid-template-columns:1fr}.result-heading img{width:65px;height:75px}.traffic-stage{min-height:315px}.traffic-lumi{width:110px;height:120px}.final-banner{gap:12px}.final-banner img{width:105px;height:115px}.final-banner h2{font-size:23px}footer{flex-direction:column;text-align:center}.modal{padding:25px 20px}}
 @media(max-width:390px){.menu-word{font-size:18px}.brand{font-size:20px}.hero h1{font-size:38px}.workbench-bottom{align-items:flex-end}.evaluate-btn{padding:12px 14px}.theme-options{grid-template-columns:1fr 1fr}}
+/* ---------- LumiPoints e insignias ---------- */
+
+.progress-section {
+  background: var(--page);
+}
+
+.progress-card {
+  max-width: 850px;
+  margin: 0 auto 35px;
+  padding: 25px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  box-shadow: 0 8px 25px var(--shadow);
+}
+
+.points-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.points-heading h3 {
+  font: 700 36px Oswald, sans-serif;
+  color: #d69b26;
+  margin: 0;
+}
+
+.points-icon {
+  font-size: 38px;
+}
+
+.level-heading {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 25px 0 10px;
+  font-size: 12px;
+}
+
+.level-track {
+  height: 12px;
+  background: var(--soft);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+#levelProgressBar {
+  height: 100%;
+  width: 0%;
+  background: #e5a323;
+  border-radius: 20px;
+  transition: width .4s ease;
+}
+
+.achievement-heading {
+  max-width: 850px;
+  margin: 35px auto 15px;
+}
+
+.achievement-heading h3 {
+  font: 700 24px Oswald, sans-serif;
+  margin: 0 0 5px;
+}
+
+.achievement-heading p {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.badge-list {
+  max-width: 850px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.badge-card {
+  padding: 20px;
+  border-radius: 17px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  text-align: center;
+}
+
+.badge-card.unlocked {
+  border-color: #d9b45f;
+  background: var(--surface);
+}
+
+.badge-card.locked {
+  opacity: .55;
+}
+
+.badge-icon {
+  font-size: 38px;
+  margin-bottom: 10px;
+}
+
+.badge-card h4 {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+.badge-card p {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.badge-card > span {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.points-history {
+  max-width: 850px;
+  margin: auto;
+  display: grid;
+  gap: 10px;
+}
+
+.points-entry {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: var(--surface);
+}
+
+.points-entry div {
+  display: grid;
+  gap: 5px;
+}
+
+.points-entry strong {
+  font-size: 12px;
+}
+
+.points-entry small {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.points-amount {
+  color: #c38a20;
+  white-space: nowrap;
+}
+
+@media (max-width: 550px) {
+  .badge-list {
+    grid-template-columns: 1fr;
+  }
+
+  .progress-card {
+    padding: 18px;
+  }
+}
+
+/* ---------- Fin de LumiPoints ---------- */
