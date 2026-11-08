@@ -577,29 +577,16 @@ function saveHistoryEntry(entry) {
 const clearHistoryButton = document.getElementById("clearHistoryBtn");
 
 if (clearHistoryButton) {
-  clearHistoryButton.addEventListener("click", function () {
-    if (promptHistory.length === 0) {
-      alert("Tu historial ya está vacío.");
-      return;
-    }
-
+  clearHistoryButton.onclick = () => {
     const confirmed = window.confirm(
       "¿Quieres borrar todo tu historial de prompts?"
     );
 
     if (!confirmed) return;
 
-    promptHistory = [];
-
-    try {
-      localStorage.removeItem(HISTORY_KEY);
-    } catch (error) {
-      console.warn("No se pudo borrar el historial.", error);
-    }
-
-    renderHistory();
-    alert("¡Historial borrado correctamente!");
-  });
+    localStorage.removeItem("lumia-prompt-history");
+    location.reload();
+  };
 }
    
 // Mostrar el historial al abrir LumIA
