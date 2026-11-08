@@ -572,7 +572,26 @@ function saveHistoryEntry(entry) {
 
   saveProgress();
 }
+   
+// Botón para borrar los registros
+$("clearHistoryBtn")?.addEventListener("click", () => {
+  if (promptHistory.length === 0) return;
 
+  const confirmed = window.confirm(
+    "¿Quieres borrar todo tu historial de prompts?"
+  );
+
+  if (!confirmed) return;
+
+  promptHistory = [];
+
+  try {
+    localStorage.removeItem(HISTORY_KEY);
+  } catch (_) {}
+
+  renderHistory();
+});
+   
 // Mostrar el historial al abrir LumIA
 renderHistory();
 
